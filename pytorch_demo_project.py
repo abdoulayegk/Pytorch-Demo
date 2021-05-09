@@ -6,14 +6,12 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
 
 # 0) Prepare data
-df = datasets.load_breast_cancer()
-X, y = df.data, df.target
+bc = datasets.load_breast_cancer()
+X, y = bc.data, bc.target
 
 n_samples, n_features = X.shape
 
-X_train, X_test, y_train, y_test = train_test_split(
-    X, y, test_size=0.2, random_state=42
-)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
 # scale
 sc = StandardScaler()
@@ -39,13 +37,12 @@ class Model(nn.Module):
         y_pred = torch.sigmoid(self.linear(x))
         return y_pred
 
-
 model = Model(n_features)
 
 # 2) Loss and optimizer
 num_epochs = 1000
 learning_rate = 0.01
-criterion = nn.dfELoss()
+criterion = nn.BCELoss()
 optimizer = torch.optim.SGD(model.parameters(), lr=learning_rate)
 
 # 3) Training loop
@@ -61,12 +58,13 @@ for epoch in range(num_epochs):
     # zero grad before new step
     optimizer.zero_grad()
 
-    if (epoch + 1) % 10 == 0:
-        print(f"epoch: {epoch+1}, loss = {loss.item():.4f}")
+    if (epoch+1) % 10 == 0:
+        print(f'epoch: {epoch+1}, loss = {loss.item():.4f}')
 
 
 with torch.no_grad():
     y_predicted = model(X_test)
     y_predicted_cls = y_predicted.round()
     acc = y_predicted_cls.eq(y_test).sum() / float(y_test.shape[0])
-    print(f"accuracy: {acc.item():.4f}")
+    print(f'accuracy: {acc.item():.4f}')
+
